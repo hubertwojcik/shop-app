@@ -1,29 +1,47 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Button } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	Image,
+	Button,
+	TouchableOpacity,
+	TouchableNativeFeedback,
+	Platform,
+} from "react-native";
 
 import Colors from "../../constans/Colors";
 
-const ProductItem = (props) => {
+const ProductItem = ({ image, title, price, onViewDetail, onAddToCart }) => {
+	let TouchableComponent = TouchableOpacity;
+	if (Platform.OS === "adroid" && Platform.Version >= 21) {
+		TouchableComponent = TouchableNativeFeedback;
+	}
+
 	return (
 		<View style={styles.product}>
-			<View style={styles.imageContainer}>
-				<Image style={styles.image} source={{ uri: props.image }} />
-			</View>
-			<View style={styles.details}>
-				<Text style={styles.title}>{props.title}</Text>
-				<Text style={styles.price}>${props.price.toFixed(2)}</Text>
-			</View>
-			<View style={styles.actions}>
-				<Button
-					color={Colors.primary}
-					title="View Details"
-					onPress={props.onViewDetail}
-				/>
-				<Button
-					color={Colors.primary}
-					title="To Cart"
-					onPress={props.onAddToCart}
-				/>
+			<View style={styles.touchable}>
+				<TouchableComponent onPress={onViewDetail} useForeground>
+					<View style={styles.imageContainer}>
+						<Image style={styles.image} source={{ uri: image }} />
+					</View>
+					<View style={styles.details}>
+						<Text style={styles.title}>{title}</Text>
+						<Text style={styles.price}>${price.toFixed(2)}</Text>
+					</View>
+					<View style={styles.actions}>
+						<Button
+							color={Colors.primary}
+							title="View Details"
+							onPress={onViewDetail}
+						/>
+						<Button
+							color={Colors.primary}
+							title="To Cart"
+							onPress={onAddToCart}
+						/>
+					</View>
+				</TouchableComponent>
 			</View>
 		</View>
 	);
@@ -40,6 +58,11 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.white,
 		height: 300,
 		margin: 20,
+		overflow: "hidden",
+	},
+	touchable: {
+		overflow: "hidden",
+		borderRadius: 10,
 	},
 	imageContainer: {
 		width: "100%",
